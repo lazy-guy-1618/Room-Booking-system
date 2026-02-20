@@ -62,6 +62,14 @@ export class BookingSystem {
     }
 
     public bookRoom(roomId: string, startTime: Date, endTime: Date, clientName: string): Booking {
+        if (startTime >= endTime) {
+            throw new Error('Start time must be before end time');
+        }
+
+        if (startTime < new Date()) {
+            throw new Error('Cannot book a room in the past');
+        }
+
         const roomExists = this.rooms.find((r) => r.roomNumber === roomId);
         if (!roomExists) {
             throw new Error('Room not found');
