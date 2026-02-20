@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
     startTimeInput.value = formatDateTime(now);
     endTimeInput.value = formatDateTime(nextHour);
 
+    // Prevent selecting dates in the past via the HTML input
+    startTimeInput.min = formatDateTime(new Date());
+    endTimeInput.min = formatDateTime(new Date());
+
     // Search Submit
     searchForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -45,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (new Date(currentStartTime) >= new Date(currentEndTime)) {
             showToast('Start time must be before end time', 'error');
+            return;
+        }
+
+        if (new Date(currentStartTime) < new Date()) {
+            showToast('Cannot select a time in the past', 'error');
             return;
         }
 
