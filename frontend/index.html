@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Room Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="glass-header">
+      <h1>Space<span>Sync</span></h1>
+      <p>Seamlessly reserve rooms for your next big idea.</p>
+    </header>
+
+    <main>
+      <!-- Search Section -->
+      <section class="search-section glass-card">
+        <h2>Find a Room</h2>
+        <form id="search-form">
+          <div class="input-group">
+            <label for="start-time">Start Time</label>
+            <input type="datetime-local" id="start-time" required>
+          </div>
+          <div class="input-group">
+            <label for="end-time">End Time</label>
+            <input type="datetime-local" id="end-time" required>
+          </div>
+          <button type="submit" class="primary-btn">Check Availability</button>
+        </form>
+      </section>
+
+      <!-- Loader -->
+      <div id="loader" class="hidden">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Results Section -->
+      <section id="results-section" class="results-section hidden">
+        <h2>Available Rooms</h2>
+        <div id="rooms-grid" class="rooms-grid"></div>
+        <p id="no-rooms-msg" class="hidden text-muted">No rooms available for the selected times.</p>
+      </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal-overlay hidden">
+      <div class="modal glass-card">
+        <button id="close-modal" class="close-btn">&times;</button>
+        <h2>Book Room <span id="modal-room-number" class="highlight"></span></h2>
+        <p class="modal-time-desc" id="modal-time-desc"></p>
+        <form id="book-form">
+          <div class="input-group">
+            <label for="client-name">Your Name</label>
+            <input type="text" id="client-name" placeholder="John Doe" required>
+          </div>
+          <p id="book-error" class="error-msg hidden"></p>
+          <button type="submit" class="primary-btn pulse-on-hover">Confirm Booking</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
