@@ -14,7 +14,19 @@
 <body>
   <div class="app-container">
     <header class="glass-header">
-      <h1>Space<span>Sync</span></h1>
+      <div class="header-content">
+        <h1>Space<span>Sync</span></h1>
+        <div class="auth-buttons">
+          <button id="btn-login-modal" class="primary-btn small-btn">Login</button>
+          <button id="btn-register-modal" class="secondary-btn small-btn">Register</button>
+          <div id="user-info" class="hidden">
+            <span id="welcome-msg"></span>
+            <button id="btn-my-bookings" class="secondary-btn small-btn">My Bookings</button>
+            <button id="btn-admin-dash" class="secondary-btn small-btn hidden">Admin</button>
+            <button id="btn-logout" class="primary-btn small-btn">Logout</button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <main>
@@ -45,6 +57,28 @@
         <div id="rooms-grid" class="rooms-grid"></div>
         <p id="no-rooms-msg" class="hidden text-muted">No rooms available for the selected times.</p>
       </section>
+
+      <!-- My Bookings Section -->
+      <section id="my-bookings-section" class="results-section hidden">
+        <h2>My Bookings</h2>
+        <div id="my-bookings-grid" class="rooms-grid"></div>
+        <p id="no-my-bookings-msg" class="hidden text-muted">You have no active bookings.</p>
+      </section>
+
+      <!-- Admin Dashboard Section -->
+      <section id="admin-section" class="results-section hidden">
+        <h2>Admin Dashboard</h2>
+        <div class="admin-grid">
+            <div class="admin-col">
+              <h3>All Users</h3>
+              <div id="admin-users-list"></div>
+            </div>
+            <div class="admin-col">
+              <h3>All Bookings</h3>
+              <div id="admin-bookings-list"></div>
+            </div>
+        </div>
+      </section>
     </main>
 
     <!-- Booking Modal -->
@@ -64,6 +98,69 @@
       </div>
     </div>
 
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal-overlay hidden">
+      <div class="modal glass-card">
+        <button id="close-auth-modal" class="close-btn">&times;</button>
+        <h2 id="auth-title">Login</h2>
+        
+        <form id="auth-form">
+          <div class="input-group" id="group-name" class="hidden">
+            <label for="auth-name">Name</label>
+            <input type="text" id="auth-name" placeholder="John Doe">
+          </div>
+          <div class="input-group">
+            <label for="auth-email">Email</label>
+            <input type="email" id="auth-email" placeholder="john@example.com" required>
+          </div>
+          <div class="input-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" required>
+          </div>
+          <p id="auth-error" class="error-msg hidden"></p>
+          <button type="submit" id="auth-submit-btn" class="primary-btn pulse-on-hover">Login</button>
+        </form>
+        
+        <div class="auth-links">
+          <a href="#" id="link-toggle-auth">Don't have an account? Register</a>
+          <br/>
+          <a href="#" id="link-forgot-password">Forgot Password?</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal-overlay hidden">
+      <div class="modal glass-card">
+        <button id="close-forgot-modal" class="close-btn">&times;</button>
+        <h2>Reset Password</h2>
+        <p class="modal-time-desc">Enter a new password for your email to instantly reset it (Mocked behavior).</p>
+        <form id="forgot-form">
+          <div class="input-group">
+            <label for="forgot-email">Email</label>
+            <input type="email" id="forgot-email" required>
+          </div>
+          <div class="input-group">
+            <label for="forgot-password-new">New Password</label>
+            <input type="password" id="forgot-password-new" required>
+          </div>
+          <button type="submit" class="primary-btn pulse-on-hover">Reset Password</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden" style="z-index: 1000;">
+      <div class="modal glass-card">
+        <h2>Confirm Cancellation</h2>
+        <p class="modal-time-desc">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+        <div style="display:flex; gap:1rem; margin-top:2rem;">
+           <button id="btn-confirm-yes" class="primary-btn pulse-on-hover" style="flex:1;">Yes, Cancel</button>
+           <button id="btn-confirm-no" class="secondary-btn" style="flex:1;">No, Keep It</button>
+        </div>
+      </div>
+    </div>
+    
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden"></div>
   </div>

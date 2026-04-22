@@ -42,8 +42,27 @@ body {
 
 /* Glassmorphism Classes */
 .glass-header {
-  text-align: center;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+#user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .glass-header h1 {
@@ -132,7 +151,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 /* Buttons */
-.primary-btn {
+.primary-btn, .secondary-btn {
   background: var(--accent-color);
   color: var(--bg-color);
   border: none;
@@ -145,6 +164,19 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   width: 100%;
   font-family: inherit;
   margin-top: 1rem;
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.small-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  width: auto;
+  margin-top: 0;
 }
 
 .primary-btn:hover {
@@ -209,6 +241,40 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   color: var(--bg-color);
 }
 
+/* Admin Grid */
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.admin-col {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1rem;
+  border-radius: 8px;
+}
+.list-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.8rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.list-item:last-child {
+  border-bottom: none;
+}
+.cancel-btn {
+  background: rgba(255, 82, 82, 0.1);
+  color: var(--error);
+  border: 1px solid var(--error);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.cancel-btn:hover {
+  background: var(--error);
+  color: white;
+}
+
 /* Modal */
 .modal-overlay {
   position: fixed;
@@ -256,6 +322,24 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   background: rgba(255, 255, 255, 0.02);
   padding: 0.8rem;
   border-radius: 4px;
+}
+
+.auth-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.auth-links a {
+  color: var(--accent-color);
+  text-decoration: none;
+  opacity: 0.9;
+  line-height: 1.8;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+  opacity: 1;
 }
 
 /* Toast */

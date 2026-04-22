@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { BookingSystem } from '../models/BookingSystem';
+import { authenticateToken, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 const bookingSystem = BookingSystem.getInstance();
@@ -27,24 +28,25 @@ router.get('/availability', (req: Request, res: Response) => {
     }
 });
 
-// POST /api/book
-router.post('/book', (req: Request, res: Response) => {
-    try {
-        const { roomId, startTime, endTime, clientName } = req.body;
+// POST /api/book (Protected)
+router.post('/book', authenticateToken, (req: AuthRequest, res: Response) => {
+  try {
+    const { roomId, startTime, endTime, clientName } = req.body;
+    const userId = req.user?.userId;
 
-        if (!roomId || !startTime || !endTime || !clientName) {
-            return res.status(400).json({ error: 'roomId, startTime, endTime, and clientName are required' });
-        }
+    if (!roomId || !startTime || !endTime || !clientName) {
+      return res.status(400).json({ error: 'roomId, startTime, endTime, and clientName are required' });
+    }
 
-        const start = new Date(startTime);
-        const end = new Date(endTime);
+    const start = new Date(startTime);
+    const end = new Date(endTime);
 
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-            return res.status(400).json({ error: 'Invalid date format' });
-        }
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return res.status(400).json({ error: 'Invalid date format' });
+    }
 
-        const booking = bookingSystem.bookRoom(roomId, start, end, clientName);
-        res.status(201).json({ message: 'Room booked successfully', booking });
+    const booking = bookingSystem.bookRoom(roomId, start, end, clientName, userId);
+    res.status(201).json({ message: 'Room booked successfully', booking });
     } catch (error: any) {
         if (error.message === 'Room not found' || error.message === 'Room is not available for the requested time slot') {
             res.status(400).json({ error: error.message });
@@ -57,6 +59,35 @@ router.post('/book', (req: Request, res: Response) => {
 // GET /api/rooms - Helper to fetch all rooms
 router.get('/rooms', (req: Request, res: Response) => {
     res.json({ rooms: bookingSystem.getRooms() });
+});
+
+// GET /api/my-bookings (Protected)
+router.get('/my-bookings', authenticateToken, (req: AuthRequest, res: Response) => {
+  const userId = req.user?.userId;
+  const userBookings = bookingSystem.getBookings().filter(b => b.userId === userId);
+  res.json({ bookings: userBookings });
+});
+
+// DELETE /api/bookings/:id (Protected)
+router.delete('/bookings/:id', authenticateToken, (req: AuthRequest, res: Response) => {
+  try {
+    const id = req.params.id as string;
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const success = bookingSystem.cancelBooking(id, userId);
+    
+    if (success) {
+      res.json({ message: 'Booking cancelled successfully' });
+    } else {
+      res.status(404).json({ error: 'Booking not found or not authorized to cancel' });
+    }
+  } catch (error: any) {
+    res.status(403).json({ error: error.message });
+  }
 });
 
 export default router;

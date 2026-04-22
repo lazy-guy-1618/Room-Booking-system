@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import apiRoutes from './routes/api';
+import authRoutes from './routes/auth';
+import adminRoutes from './routes/admin';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,6 +14,8 @@ app.use(express.json());
 
 // API Routes
 app.use('/api', apiRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
