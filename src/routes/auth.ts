@@ -7,10 +7,11 @@ import rateLimit from 'express-rate-limit';
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20, // Limit each IP to 20 requests per `window` (lenient for NAT / typists)
+  max: 20, // Limit each IP to 20 failed requests per `window`
   message: { error: 'Too many authentication attempts from this IP, please try again after 15 minutes' },
   standardHeaders: true, 
-  legacyHeaders: false, 
+  legacyHeaders: false,
+  skipSuccessfulRequests: true // Exclude successful 200/201 logins from the quota!
 });
 
 const router = Router();
