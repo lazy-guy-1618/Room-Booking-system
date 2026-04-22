@@ -3,12 +3,21 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { BookingSystem } from '../models/BookingSystem';
 import { config } from '../config';
+import rateLimit from 'express-rate-limit';
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Limit each IP to 20 requests per `window` (lenient for NAT / typists)
+  message: { error: 'Too many authentication attempts from this IP, please try again after 15 minutes' },
+  standardHeaders: true, 
+  legacyHeaders: false, 
+});
 
 const router = Router();
 const system = BookingSystem.getInstance();
 
 // POST /api/auth/register
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', authLimiter, async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
@@ -40,7 +49,7 @@ router.post('/register', async (req: Request, res: Response) => {
 });
 
 // POST /api/auth/login
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', authLimiter, async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -76,7 +85,7 @@ router.post('/login', async (req: Request, res: Response) => {
 });
 
 // POST /api/auth/forgot-password (MOCK)
-router.post('/forgot-password', async (req: Request, res: Response) => {
+router.post('/forgot-password', authLimiter, async (req: Request, res: Response) => {
   try {
     const { email, newPassword } = req.body;
 
