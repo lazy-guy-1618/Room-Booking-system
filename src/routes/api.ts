@@ -29,7 +29,7 @@ router.get('/availability', (req: Request, res: Response) => {
 });
 
 // POST /api/book (Protected)
-router.post('/book', authenticateToken, (req: AuthRequest, res: Response) => {
+router.post('/book', authenticateToken, async (req: AuthRequest, res: Response) => {
   try {
     const { roomId, startTime, endTime, clientName } = req.body;
     const userId = req.user?.userId;
@@ -45,7 +45,7 @@ router.post('/book', authenticateToken, (req: AuthRequest, res: Response) => {
       return res.status(400).json({ error: 'Invalid date format' });
     }
 
-    const booking = bookingSystem.bookRoom(roomId, start, end, clientName, userId);
+    const booking = await bookingSystem.bookRoom(roomId, start, end, clientName, userId);
     res.status(201).json({ message: 'Room booked successfully', booking });
     } catch (error: any) {
         if (error.message === 'Room not found' || error.message === 'Room is not available for the requested time slot') {

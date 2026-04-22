@@ -2,6 +2,7 @@ import { Room, StandardRoom, ConferenceRoom } from './Room';
 import { User, Role } from './User';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { LockManager } from '../utils/LockManager';
 
 export interface Booking {
     id: string;
@@ -87,35 +88,42 @@ export class BookingSystem {
         );
     }
 
-    public bookRoom(roomId: string, startTime: Date, endTime: Date, clientName: string, userId?: string): Booking {
-        if (startTime >= endTime) {
-            throw new Error('Start time must be before end time');
+    public async bookRoom(roomId: string, startTime: Date, endTime: Date, clientName: string, userId?: string): Promise<Booking> {
+        const mutex = LockManager.getInstance().getLockForRoom(roomId);
+        const release = await mutex.acquire();
+
+        try {
+            if (startTime >= endTime) {
+                throw new Error('Start time must be before end time');
+            }
+
+            if (startTime < new Date()) {
+                throw new Error('Cannot book a room in the past');
+            }
+
+            const roomExists = this.rooms.find((r) => r.roomNumber === roomId);
+            if (!roomExists) {
+                throw new Error('Room not found');
+            }
+
+            if (!this.isRoomAvailable(roomId, startTime, endTime)) {
+                throw new Error('Room is not available for the requested time slot');
+            }
+
+            const newBooking: Booking = {
+                id: uuidv4(),
+                roomId,
+                startTime,
+                endTime,
+                clientName,
+                userId, // Assign userId to the booking
+            };
+
+            this.bookings.push(newBooking);
+            return newBooking;
+        } finally {
+            release();
         }
-
-        if (startTime < new Date()) {
-            throw new Error('Cannot book a room in the past');
-        }
-
-        const roomExists = this.rooms.find((r) => r.roomNumber === roomId);
-        if (!roomExists) {
-            throw new Error('Room not found');
-        }
-
-        if (!this.isRoomAvailable(roomId, startTime, endTime)) {
-            throw new Error('Room is not available for the requested time slot');
-        }
-
-        const newBooking: Booking = {
-            id: uuidv4(),
-            roomId,
-            startTime,
-            endTime,
-            clientName,
-            userId, // Assign userId to the booking
-        };
-
-        this.bookings.push(newBooking);
-        return newBooking;
     }
 
     // --- User Management Methods ---
